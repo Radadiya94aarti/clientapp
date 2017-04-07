@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eeeeee"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/appBarLayout">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="3dp"
+            app:popupTheme="@style/Theme.AppCompat.NoActionBar">
+
+            <TextView
+                android:id="@+id/heading_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User Data"
+                android:textAllCaps="true"
+                android:layout_gravity="center"
+                android:textColor="#ffffff"
+                android:textSize="22sp" />
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#585b6c"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/appBarLayout">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_margin="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/user"/>
+
+            <TextView
+                android:id="@+id/show_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Arti Radadiya"
+                android:layout_gravity="center"
+                android:textColor="#fff"
+                android:textSize="22sp"/>
+            </LinearLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:alpha="0.5"
+            android:layout_marginLeft="32dp"
+            android:background="#000" />
+
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mobilenum"/>
+
+            <TextView
+                android:id="@+id/show_mobnum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9879879870"
+                android:textColor="#fff"
+                android:layout_gravity="center"
+                android:textSize="18sp"/>
+
+                </LinearLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:alpha="0.5"
+            android:layout_marginLeft="32dp"
+            android:background="#000" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/envelope"/>
+
+            <TextView
+                android:id="@+id/show_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:layout_gravity="center"
+                android:textSize="18sp"
+                android:text="abc@gmail.com" />
+
+                </LinearLayout>
+
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:alpha="0.5"
+            android:layout_marginLeft="32dp"
+            android:background="#000" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/emergency"/>
+
+            <TextView
+                android:id="@+id/show_emegno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7878787800"
+                android:textColor="#fff"
+                android:layout_gravity="center"
+                android:textSize="18sp"/>
+
+                </LinearLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:alpha="0.5"
+            android:layout_marginLeft="32dp"
+            android:background="#000" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/description"/>
+
+            <TextView
+                android:id="@+id/show_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hello Fragment !!!!!!"
+                android:layout_gravity="center"
+                android:textColor="#fff"
+                android:textSize="18sp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/addFloating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_add"
+                app:fabSize="mini"
+                android:layout_gravity="right|end"/>
+
+        </LinearLayout>
+
+</RelativeLayout>
