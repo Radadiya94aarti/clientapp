@@ -332,6 +332,7 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
 
         void onCardSelected(boolean IsSelected, int count);
 
+        //
     }
 
     @Override
