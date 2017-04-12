@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.example.lenovo.clientapp"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -37,6 +37,8 @@ dependencies {
     compile 'com.google.firebase:firebase-database:10.0.1'
 
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+
+    compile 'co.lujun:androidtagview:1.1.0'
 
     compile 'com.afollestad.material-dialogs:core:0.9.1.0'
 

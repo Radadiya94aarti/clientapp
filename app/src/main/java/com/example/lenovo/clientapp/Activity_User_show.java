@@ -1,18 +1,14 @@
 package com.example.lenovo.clientapp;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Created by lenovo on 28-03-2017.
@@ -53,7 +49,7 @@ public class Activity_User_show extends AppCompatActivity{
 
 
         String name = getIntent().getStringExtra("data1").toString();
-        String mobnum = getIntent().getStringExtra("data2").toString();
+        final String mobnum = getIntent().getStringExtra("data2").toString();
         String email = getIntent().getStringExtra("data3").toString();
         String emergno = getIntent().getStringExtra("data4").toString();
         String desc = getIntent().getStringExtra("data5").toString();
@@ -76,18 +72,22 @@ public class Activity_User_show extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-                final MaterialDialog.Builder builder = new MaterialDialog.Builder(Activity_User_show.this);
-                builder.customView(R.layout.activity_send_mess_form,false);
-                builder.backgroundColor(ContextCompat.getColor(Activity_User_show.this, R.color.white));
-                final MaterialDialog dialog_send = builder.build();
-                dialog_send.getWindow().setWindowAnimations(R.style.FadeInOut);
-                dialog_send.show();
+                Intent intent = new Intent(Activity_User_show.this,Send_Mess_Page.class);
+                intent.putExtra("num",mobnum);
+                startActivity(intent);
 
-                View view = dialog_send.getCustomView();
-
-                TextView header = (TextView)view.findViewById(R.id.header);
-                EditText mess_info = (EditText)view.findViewById(R.id.textMess);
-                Button mSend = (Button)view.findViewById(R.id.send_btn);
+//                final MaterialDialog.Builder builder = new MaterialDialog.Builder(Activity_User_show.this);
+//                builder.customView(R.layout.activity_send_mess_form,false);
+//                builder.backgroundColor(ContextCompat.getColor(Activity_User_show.this, R.color.white));
+//                final MaterialDialog dialog_send = builder.build();
+//                dialog_send.getWindow().setWindowAnimations(R.style.FadeInOut);
+//                dialog_send.show();
+//
+//                View view = dialog_send.getCustomView();
+//
+//                TextView header = (TextView)view.findViewById(R.id.header);
+//                EditText mess_info = (EditText)view.findViewById(R.id.textMess);
+//                Button mSend = (Button)view.findViewById(R.id.send_btn);
 
             }
         });

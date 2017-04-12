@@ -30,15 +30,16 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-//        mViewPager.setOffscreenPageLimit(2);
-
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.BottomTabView);
 
+        mViewPager.setOffscreenPageLimit(2);
+
         tabLayout.addTab(tabLayout.newTab().setText("View"));
         tabLayout.addTab(tabLayout.newTab().setText("Add"));
         tabLayout.addTab(tabLayout.newTab().setText("Profile"));
+
 
 
         tab1 = LayoutInflater.from(this).inflate(R.layout.custom_bottombar_tabs, null);
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         customTab3.setCustomView(tab3);
 
 
-        // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu_main,menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
             return numOfTabs;
         }
-
-
     }
+
+
 }

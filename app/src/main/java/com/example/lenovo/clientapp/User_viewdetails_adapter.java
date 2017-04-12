@@ -187,7 +187,9 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdetails_adapter.MyViewHolder> {
@@ -199,9 +201,14 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
 
 
     String xyz;
-    int counter = 0;
+    static int counter = 0;
+
 
     public static ArrayList<String> values = new ArrayList<>();
+
+
+    public static Map<String, String> map = new HashMap<>();
+
 
     public List<User_details_info> infoList;
 
@@ -253,11 +260,14 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
 
         xyz = String.valueOf(details.getUsername().charAt(0));
 
+        preSelectContacts(details);
+
         ColorGenerator generator = ColorGenerator.MATERIAL;
         int color = generator.getColor(details.getUsername());
         drawable = TextDrawable.builder().beginConfig().toUpperCase().endConfig().buildRoundRect(xyz, color, 150);
         holder.profile.setImageDrawable(drawable);
         holder.itemView.setBackgroundColor(details.isSelected() ? Color.CYAN : Color.WHITE);
+
 
         if (details.isSelected()) {
             holder.image1.setVisibility(View.VISIBLE);
@@ -265,31 +275,33 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
             holder.image1.setVisibility(View.GONE);
         }
 
+
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (isDoubleSelected) {
                     if (details.isSelected()) {
+
                         counter--;
-                        values.remove(details.getMobileno());
+                        map.remove(details.getUsername());
                         show.onCardSelected(true, counter);
                         details.setSelected(false);
                         holder.itemView.setBackgroundColor(Color.GREEN);
 
                     } else {
                         counter++;
-                        values.add(details.getMobileno());
+                        map.put(details.getUsername(), details.getMobileno());
                         details.setSelected(true);
                         holder.itemView.setBackgroundColor(Color.CYAN);
                         show.onCardSelected(true, counter);
                     }
                     if (counter == 0) {
-                        values.clear();
+                        map.clear();
                         isDoubleSelected = false;
                         show.onCardSelected(false, counter);
-                    }
 
+                    }
                     notifyDataSetChanged();
 
                 } else {
@@ -301,9 +313,7 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
                     intent.putExtra("data5", details.getText());
                     mContext.startActivity(intent);
                 }
-
             }
-
         });
 
 
@@ -311,11 +321,12 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
             @Override
             public boolean onLongClick(View v) {
                 if (!isDoubleSelected) {
+                    map.clear();
                     counter = 1;
                     isDoubleSelected = true;
-                    show.onCardSelected(true, counter);
-                    values.add(details.getMobileno());
+                    map.put(details.getUsername(), details.getMobileno());
                     details.setSelected(true);
+                    show.onCardSelected(true, counter);
                     holder.itemView.setBackgroundColor(Color.RED);
                     notifyDataSetChanged();
 
@@ -324,15 +335,11 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
                 return true;
             }
         });
-
     }
-
 
     public interface onShow {
 
         void onCardSelected(boolean IsSelected, int count);
-
-        //
     }
 
     @Override
@@ -340,11 +347,21 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-
     @Override
     public int getItemCount() {
         return infoList.size();
     }
 
+    public boolean preSelectContacts(User_details_info userDetails) {
+        if (!map.isEmpty()) {
+            if (map.containsKey(userDetails.getUsername())) {
+                userDetails.setSelected(true);
+            } else {
+                userDetails.setSelected(false);
+            }
 
+            return true;
+        }
+        return false;
+    }
 }

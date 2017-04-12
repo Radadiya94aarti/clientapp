@@ -31,6 +31,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+import static com.example.lenovo.clientapp.User_viewdetails_adapter.counter;
+import static com.example.lenovo.clientapp.User_viewdetails_adapter.map;
+
 public class User_details_home extends Fragment implements User_viewdetails_adapter.onShow {
 
 
@@ -43,8 +47,11 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
     boolean isShow = false;
     Menu context_menu;
     Toolbar toolbar;
-    ImageView mess, closeBtn, searchBtn;
+    ImageView mess, closeBtn, searchBtn,delBtn;
     TextView itemselected, home_title;
+
+    public static int REQUEST_CODE = 0;
+
 
     int MESSAGE_SEND_PERMISSION = 0;
 
@@ -92,6 +99,7 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
         itemselected = (TextView) toolbar.findViewById(R.id.num_item);
         closeBtn = (ImageView) toolbar.findViewById(R.id.close);
         searchBtn = (ImageView) toolbar.findViewById(R.id.item_search);
+        delBtn = (ImageView)toolbar.findViewById(R.id.del);
 
         Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "font/Roboto-Light.ttf");
         home_title.setTypeface(typeface);
@@ -104,6 +112,7 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
         recyclerView.setLayoutManager(manager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         InitRecyclerView();
 
 
@@ -153,8 +162,6 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
             }
         });
     }
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
@@ -168,7 +175,7 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
             mess.setVisibility(View.VISIBLE);
             closeBtn.setVisibility(View.VISIBLE);
             itemselected.setVisibility(View.VISIBLE);
-            itemselected.setText(String.valueOf(count) + " items selected");
+            itemselected.setText(String.valueOf(counter) + " items selected");
             home_title.setVisibility(View.GONE);
             searchBtn.setVisibility(View.GONE);
 
@@ -177,20 +184,22 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
                 @Override
                 public void onClick(View v) {
 
+                    User_viewdetails_adapter.map.remove(IsSelected);
+                    Toast.makeText(getActivity(), "" +map, Toast.LENGTH_SHORT).show();
+
+                    adapter.notifyDataSetChanged();
 
                 }
             });
+
 
             mess.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     Intent intent = new Intent(getActivity(), Send_Mess_Page.class);
-                    intent.putStringArrayListExtra("array_list", User_viewdetails_adapter.values);
-
-                    Toast.makeText(getActivity(), "" + User_viewdetails_adapter.values, Toast.LENGTH_SHORT).show();
-                    startActivity(intent);
-
+//                    intent.putStringArrayListExtra("array_list", User_viewdetails_adapter.values);
+                    startActivityForResult(intent,REQUEST_CODE);
 
                 }
             });
@@ -200,6 +209,18 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
             itemselected.setVisibility(View.GONE);
             home_title.setVisibility(View.VISIBLE);
             searchBtn.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if(requestCode == REQUEST_CODE && resultCode == RESULT_OK)
+        {
+            itemselected.setText(String.valueOf(counter) + " items selected");
+            adapter.notifyDataSetChanged();
         }
     }
 }

@@ -14,12 +14,26 @@ public class User_details_info {
     private String text;
     private boolean isSelected = false;
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    boolean isChecked = false;
+
     User_details_info(String username,String mobileno,String emailid,String emergncyno,String text) {
         this.username = username;
         this.mobileno = mobileno;
         this.emailid = emailid;
         this.emergncyno = emergncyno;
         this.text = text;
+    }
+
+    User_details_info(boolean isChecked){
+        this.isChecked = isChecked;
     }
 
     public void setUsername(String username) {
