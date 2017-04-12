@@ -185,6 +185,7 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
                 public void onClick(View v) {
 
                     User_viewdetails_adapter.map.remove(IsSelected);
+
                     Toast.makeText(getActivity(), "" +map, Toast.LENGTH_SHORT).show();
 
                     adapter.notifyDataSetChanged();
