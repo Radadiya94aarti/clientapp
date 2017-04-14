@@ -18,7 +18,7 @@ public class Activity_User_show extends AppCompatActivity{
 
     TextView t_name,t_mobno,t_email,t_emergno,t_text,header;
     Toolbar toolbar;
-    FloatingActionButton fab1;
+    FloatingActionButton fab1,fab2;
 
 
     @Override
@@ -33,6 +33,7 @@ public class Activity_User_show extends AppCompatActivity{
         t_emergno = (TextView)findViewById(R.id.show_emegno);
         t_text = (TextView)findViewById(R.id.show_desc);
         fab1 = (FloatingActionButton)findViewById(R.id.addFloating);
+        fab2 = (FloatingActionButton)findViewById(R.id.edit_data);
 
         Typeface typeface = Typeface.createFromAsset(this.getAssets(),"font/Roboto-Light.ttf");
         t_name.setTypeface(typeface);
@@ -48,11 +49,11 @@ public class Activity_User_show extends AppCompatActivity{
         header.setTypeface(typeface);
 
 
-        String name = getIntent().getStringExtra("data1").toString();
+        final String name = getIntent().getStringExtra("data1").toString();
         final String mobnum = getIntent().getStringExtra("data2").toString();
-        String email = getIntent().getStringExtra("data3").toString();
-        String emergno = getIntent().getStringExtra("data4").toString();
-        String desc = getIntent().getStringExtra("data5").toString();
+        final String email = getIntent().getStringExtra("data3").toString();
+        final String emergno = getIntent().getStringExtra("data4").toString();
+        final String desc = getIntent().getStringExtra("data5").toString();
 
         t_name.setText(name);
         t_mobno.setText(String.valueOf(mobnum));
@@ -73,23 +74,35 @@ public class Activity_User_show extends AppCompatActivity{
             public void onClick(View v) {
 
                 Intent intent = new Intent(Activity_User_show.this,Send_Mess_Page.class);
-                intent.putExtra("num",mobnum);
+                User_viewdetails_adapter.map.clear();
+                User_viewdetails_adapter.map.put(name, mobnum);
                 startActivity(intent);
 
-//                final MaterialDialog.Builder builder = new MaterialDialog.Builder(Activity_User_show.this);
-//                builder.customView(R.layout.activity_send_mess_form,false);
-//                builder.backgroundColor(ContextCompat.getColor(Activity_User_show.this, R.color.white));
-//                final MaterialDialog dialog_send = builder.build();
-//                dialog_send.getWindow().setWindowAnimations(R.style.FadeInOut);
-//                dialog_send.show();
-//
-//                View view = dialog_send.getCustomView();
-//
-//                TextView header = (TextView)view.findViewById(R.id.header);
-//                EditText mess_info = (EditText)view.findViewById(R.id.textMess);
-//                Button mSend = (Button)view.findViewById(R.id.send_btn);
 
             }
         });
+
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent intent = new Intent(Activity_User_show.this,Add_user_activity.class);
+                intent.putExtra("t_name",name);
+                intent.putExtra("t_mobno",mobnum);
+                intent.putExtra("t_email",email);
+                intent.putExtra("t_emergno",emergno);
+                intent.putExtra("t_text",desc);
+                intent.putExtra("edit", 1);
+
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        User_viewdetails_adapter.map.clear();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.lenovo.clientapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -28,12 +29,24 @@ public class Login extends AppCompatActivity {
     Button login;
     String username1="",password1="";
     String user_name="",pass_word="";
+    SharedPreferences login_pref;
+    SharedPreferences.Editor login_editor;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        login_pref=getSharedPreferences("Login",MODE_PRIVATE);
+        login_editor=login_pref.edit();
+
+        String login_user=login_pref.getString("UserName","");
+
+        if(login_user.length()>0){
+            startActivity(new Intent(Login.this,MainActivity.class));
+            finish();
+        }
 
 
         u_name_field = (EditText)findViewById(R.id.txt_username);
@@ -78,6 +91,8 @@ public class Login extends AppCompatActivity {
                         {
 
                             Toast.makeText(Login.this, "Login Successfully ", Toast.LENGTH_SHORT).show();
+                            login_editor.putString("UserName",user_name);
+                            login_editor.commit();
                             Intent intent = new Intent(Login.this,MainActivity.class);
                             startActivity(intent);
                             finish();

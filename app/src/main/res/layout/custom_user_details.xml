@@ -17,6 +17,7 @@
         android:id="@+id/card"
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
+        android:clickable="true"
         android:layout_height="wrap_content"
         android:elevation="2dp">
 

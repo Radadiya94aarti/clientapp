@@ -182,6 +182,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -194,7 +195,7 @@ import java.util.Map;
 
 public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdetails_adapter.MyViewHolder> {
 
-    private boolean isDoubleSelected = false;
+    boolean isDoubleSelected = false;
     private Context mContext;
     private onShow show;
     TextDrawable drawable;
@@ -240,7 +241,9 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
             username.setTypeface(typeface);
             mobileno.setTypeface(typeface);
             emailid.setTypeface(typeface);
+
         }
+
     }
 
     @Override
@@ -283,17 +286,15 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
                 if (isDoubleSelected) {
                     if (details.isSelected()) {
 
+//                        counter--;
+                        map.remove((details.getUsername()+counter));
                         counter--;
-                        map.remove(details.getUsername());
-                        show.onCardSelected(true, counter);
                         details.setSelected(false);
-                        holder.itemView.setBackgroundColor(Color.GREEN);
-
+                        show.onCardSelected(true, counter);
                     } else {
                         counter++;
-                        map.put(details.getUsername(), details.getMobileno());
+                        map.put((details.getUsername()+counter), details.getMobileno());
                         details.setSelected(true);
-                        holder.itemView.setBackgroundColor(Color.CYAN);
                         show.onCardSelected(true, counter);
                     }
                     if (counter == 0) {
@@ -302,6 +303,7 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
                         show.onCardSelected(false, counter);
 
                     }
+                    Toast.makeText(mContext, details.getUsername()+counter, Toast.LENGTH_SHORT).show();
                     notifyDataSetChanged();
 
                 } else {
@@ -316,7 +318,6 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
             }
         });
 
-
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -324,10 +325,9 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
                     map.clear();
                     counter = 1;
                     isDoubleSelected = true;
-                    map.put(details.getUsername(), details.getMobileno());
+                    map.put(details.getUsername()+counter, details.getMobileno());
                     details.setSelected(true);
                     show.onCardSelected(true, counter);
-                    holder.itemView.setBackgroundColor(Color.RED);
                     notifyDataSetChanged();
 
                     return details.isSelected();
@@ -352,15 +352,20 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
         return infoList.size();
     }
 
+
+
     public boolean preSelectContacts(User_details_info userDetails) {
         if (!map.isEmpty()) {
-            if (map.containsKey(userDetails.getUsername())) {
-                userDetails.setSelected(true);
-            } else {
-                userDetails.setSelected(false);
+            if (map.containsKey(userDetails.getUsername()+counter)) {
+//                Toast.makeText(mContext, map.get(userDetails.getUsername()), Toast.LENGTH_LONG).show();
+                if(map.get(userDetails.getUsername()+counter) == userDetails.getMobileno()){
+                    userDetails.setSelected(true);
+                }
             }
-
             return true;
+        } else {
+            isDoubleSelected = false;
+            userDetails.setSelected(false);
         }
         return false;
     }

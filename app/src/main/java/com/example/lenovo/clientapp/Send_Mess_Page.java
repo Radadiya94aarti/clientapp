@@ -85,19 +85,18 @@ public class Send_Mess_Page extends AppCompatActivity {
         Bundle os = getIntent().getExtras();
         if(os!=null)
         {
-            mTagContainerLayout.addTag(os.getString("num"));
+
+            mTagContainerLayout.setEnableCross(false);
         }
-
         numbers = "";
-
         for (Entry<String, String> entry : User_viewdetails_adapter.map.entrySet()) {
 //            numbers = entry.getValue();
+
             mTagContainerLayout.addTag(entry.getKey());
 //            numbers = ",";
         }
 
-//        Toast.makeText(this, "" + User_viewdetails_adapter.map, Toast.LENGTH_SHORT).show();
-//        number.setText(numbers);
+
 
 
         mTagContainerLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
@@ -114,6 +113,7 @@ public class Send_Mess_Page extends AppCompatActivity {
             @Override
             public void onTagCrossClick(int position) {
 
+
                 String key = mTagContainerLayout.getTagText(position);
                 if (User_viewdetails_adapter.map.containsKey(key)) {
                     User_viewdetails_adapter.counter--;
@@ -122,6 +122,7 @@ public class Send_Mess_Page extends AppCompatActivity {
                     setResult(RESULT_OK, intent);
                 }
                 mTagContainerLayout.removeTag(position);
+
             }
         });
 
@@ -129,16 +130,17 @@ public class Send_Mess_Page extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 for (Entry<String, String> entry : User_viewdetails_adapter.map.entrySet()) {
                     String message = mess_info.getText().toString();
                     String tempMobile = entry.getValue();
                     sendMessage(tempMobile, message);
                 }
 
-                //                for (int i = 0; i < User_viewdetails_adapter.map.size(); i++)
+//                for (int i = 0; i < User_viewdetails_adapter.map.size(); i++)
 //                {
-//                    String message = mess_info.getText().toString();
-//
+//                       String message = mess_info.getText().toString();
+
 //                    String tempMobileNumber = User_viewdetails_adapter.map.get(i).toString();
 //                    sendMessage(tempMobileNumber, message);
 //                }
@@ -151,8 +153,6 @@ public class Send_Mess_Page extends AppCompatActivity {
 
                 mess_info.setText("");
                 mTagContainerLayout.removeAllTags();
-
-
             }
         });
     }
@@ -233,15 +233,14 @@ public class Send_Mess_Page extends AppCompatActivity {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNo, null, sms, pi, deliveredPI);
             Toast.makeText(Send_Mess_Page.this, "SMS is Sent!",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
+            mess_info.setText(" ");
 
         } catch (Exception e) {
             Toast.makeText(Send_Mess_Page.this,
                     "SMS failed, please try again later!",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
-
-
 }

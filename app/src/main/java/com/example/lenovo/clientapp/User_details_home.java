@@ -1,6 +1,8 @@
 package com.example.lenovo.clientapp;
 
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
@@ -8,16 +10,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +55,8 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
     Toolbar toolbar;
     ImageView mess, closeBtn, searchBtn,delBtn;
     TextView itemselected, home_title;
+
+    EditText search_edit;
 
     public static int REQUEST_CODE = 0;
 
@@ -83,11 +91,13 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 
         View view = inflater.inflate(R.layout.fragment_user_details, container, false);
+        setHasOptionsMenu(true);
+
 
         AskPermission();
 
@@ -100,11 +110,12 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
         closeBtn = (ImageView) toolbar.findViewById(R.id.close);
         searchBtn = (ImageView) toolbar.findViewById(R.id.item_search);
         delBtn = (ImageView)toolbar.findViewById(R.id.del);
+//        search_edit = (EditText)toolbar.findViewById(R.id.search_text);
+
 
         Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "font/Roboto-Light.ttf");
         home_title.setTypeface(typeface);
         itemselected.setTypeface(typeface);
-
 
         recyclerView.setHasFixedSize(true);
         adapter = new User_viewdetails_adapter(getActivity(), info, this);
@@ -115,8 +126,28 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
         adapter.notifyDataSetChanged();
         InitRecyclerView();
 
+//
+//        searchBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                search_edit.setVisibility(View.VISIBLE);
+//                home_title.setVisibility(View.GONE);
+//
+//            }
+//        });
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.menu_main, menu);
+        MenuItem item = menu.findItem(R.id.search_item);
+        SearchView s_view = (SearchView)MenuItemCompat.getActionView(menu.findItem(R.id.search_item));
+        SearchManager manager = (SearchManager)getActivity().getSystemService(Context.SEARCH_SERVICE);
+        s_view.setSearchableInfo(manager.getSearchableInfo(getActivity().getComponentName()));
+        MenuItemCompat.setActionView(item, s_view);
     }
 
     private void InitRecyclerView() {
@@ -162,11 +193,6 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
             }
         });
     }
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
 
     @Override
     public void onCardSelected(final boolean IsSelected, final int count) {
@@ -178,20 +204,35 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
             itemselected.setText(String.valueOf(counter) + " items selected");
             home_title.setVisibility(View.GONE);
             searchBtn.setVisibility(View.GONE);
+            delBtn.setVisibility(View.VISIBLE);
 
 
             closeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    User_viewdetails_adapter.map.remove(IsSelected);
-
-                    Toast.makeText(getActivity(), "" +map, Toast.LENGTH_SHORT).show();
-
+                    map.clear();
+                    mess.setVisibility(View.GONE);
+                    closeBtn.setVisibility(View.GONE);
+                    itemselected.setVisibility(View.GONE);
+                    home_title.setVisibility(View.VISIBLE);
+                    searchBtn.setVisibility(View.VISIBLE);
+                    delBtn.setVisibility(View.GONE);
                     adapter.notifyDataSetChanged();
 
                 }
             });
+
+            delBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                }
+            });
+
+
+
 
 
             mess.setOnClickListener(new View.OnClickListener() {
@@ -210,8 +251,11 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
             itemselected.setVisibility(View.GONE);
             home_title.setVisibility(View.VISIBLE);
             searchBtn.setVisibility(View.VISIBLE);
+            delBtn.setVisibility(View.GONE);
         }
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -220,7 +264,19 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
 
         if(requestCode == REQUEST_CODE && resultCode == RESULT_OK)
         {
-            itemselected.setText(String.valueOf(counter) + " items selected");
+            if(counter==0)
+            {
+                mess.setVisibility(View.GONE);
+                closeBtn.setVisibility(View.GONE);
+                itemselected.setVisibility(View.GONE);
+                delBtn.setVisibility(View.GONE);
+                home_title.setVisibility(View.VISIBLE);
+                searchBtn.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                itemselected.setText(String.valueOf(counter) + " items selected");
+            }
             adapter.notifyDataSetChanged();
         }
     }
