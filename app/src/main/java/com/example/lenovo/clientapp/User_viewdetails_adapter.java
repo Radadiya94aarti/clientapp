@@ -200,6 +200,7 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
     private onShow show;
     TextDrawable drawable;
 
+    static ArrayList<String > q_email=new ArrayList<String>();
 
     String xyz;
     static int counter = 0;
@@ -292,9 +293,11 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
                         details.setSelected(false);
                         show.onCardSelected(true, counter);
                     } else {
+
                         counter++;
                         map.put((details.getUsername()+counter), details.getMobileno());
                         details.setSelected(true);
+                        q_email.add(details.getEmailid());
                         show.onCardSelected(true, counter);
                     }
                     if (counter == 0) {
@@ -327,6 +330,7 @@ public class User_viewdetails_adapter extends RecyclerView.Adapter<User_viewdeta
                     isDoubleSelected = true;
                     map.put(details.getUsername()+counter, details.getMobileno());
                     details.setSelected(true);
+                    q_email.add(details.getEmailid());
                     show.onCardSelected(true, counter);
                     notifyDataSetChanged();
 

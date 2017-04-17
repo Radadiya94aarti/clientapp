@@ -32,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -55,6 +56,12 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
     Toolbar toolbar;
     ImageView mess, closeBtn, searchBtn,delBtn;
     TextView itemselected, home_title;
+
+    ArrayList<String > q_email=User_viewdetails_adapter.q_email;
+
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("Users");
+
 
     EditText search_edit;
 
@@ -93,6 +100,8 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
 
 
         View view = inflater.inflate(R.layout.fragment_user_details, container, false);
@@ -152,8 +161,6 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
 
     private void InitRecyclerView() {
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("Users");
 
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -227,6 +234,30 @@ public class User_details_home extends Fragment implements User_viewdetails_adap
                 @Override
                 public void onClick(View v) {
 
+
+                    for(int i=0;i<q_email.size();i++) {
+
+                        Query query=myRef.orderByChild("emailid").equalTo(q_email.get(i));
+
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                                    snapshot.getRef().removeValue();
+
+                                }
+                                //Toast.makeText(getActivity(), ""+dataSnapshot.getChildren(), Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
 
                 }
             });

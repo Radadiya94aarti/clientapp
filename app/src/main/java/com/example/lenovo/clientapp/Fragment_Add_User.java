@@ -1,6 +1,7 @@
 package com.example.lenovo.clientapp;
 
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,8 +14,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -26,6 +31,8 @@ public class Fragment_Add_User extends Fragment {
     Button mSave,mCancel;
     User_details_info data;
     Toolbar toolbar;
+    boolean flag=false;
+    String q_email;
     TextView toolbar_header;
     String sname,smobno,semail,semergno,sdesc;
 
@@ -69,6 +76,7 @@ public class Fragment_Add_User extends Fragment {
         final Bundle os = getActivity().getIntent().getExtras();
         if(os!=null)
         {
+            q_email=getArguments().getString("m_email");
             sname = getArguments().getString("m_name");
             smobno = getArguments().getString("m_mobilenum");
             semail = getArguments().getString("m_email");
@@ -83,29 +91,36 @@ public class Fragment_Add_User extends Fragment {
                     getActivity().finish();
                 }
             });
+
+            mName.setText(sname);
+            mMobNo.setText(smobno);
+            mEmail.setText(semail);
+            mEmergNo.setText(semergno);
+            mDesc.setText(sdesc);
+
         }
 
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isForEdit == 0){ //For new contact
 
-                    sname = mName.getText().toString();
-                    smobno = Objects.toString(mMobNo.getText(),null);
-                    semail = mEmail.getText().toString();
-                    semergno = Objects.toString(mEmergNo.getText(),null);
-                    sdesc = mDesc.getText().toString();
-                }
-                else if(isForEdit == 1){    // For edit contact
+                sname = mName.getText().toString();
+                smobno = Objects.toString(mMobNo.getText(),null);
+                semail = mEmail.getText().toString();
+                semergno = Objects.toString(mEmergNo.getText(),null);
+                sdesc = mDesc.getText().toString();
 
 
-                        mName.setText(sname);
-                        mMobNo.setText(smobno);
-                        mEmail.setText(semail);
-                        mEmergNo.setText(semergno);
-                        mDesc.setText(sdesc);
 
-                }
+
+
+
+
+                // For edit contact
+
+
+
+
                 if(sname.isEmpty() || semail.isEmpty() || sdesc.isEmpty() || smobno.isEmpty())
                 {
                     Toast.makeText(getActivity(), "please fill all the details", Toast.LENGTH_SHORT).show();
@@ -113,16 +128,59 @@ public class Fragment_Add_User extends Fragment {
 
                 else
                 {
-                    User_details_info data = new User_details_info(sname,smobno,semail,semergno,sdesc);
-                    FirebaseDatabase.getInstance().getReference().child("Users").push().setValue(data);
-                    Toast.makeText(getActivity(), "Details stored successfully", Toast.LENGTH_SHORT).show();
+
+                    if(os!=null)
+                    {
+                        Query query=myRef.child("Users").orderByChild("emailid").equalTo(q_email);
+
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                                    User_details_info data = new User_details_info(sname,smobno,semail,semergno,sdesc);
+                                    snapshot.getRef().setValue(data);
+                                    //   snapshot.getRef().removeValue();
+                                    flag=true;
+                                }
+                                //Toast.makeText(getActivity(), ""+dataSnapshot.getChildren(), Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+
+                    else {
+                        User_details_info data = new User_details_info(sname,smobno,semail,semergno,sdesc);
+                        FirebaseDatabase.getInstance().getReference().child("Users").push().setValue(data);
+                        Toast.makeText(getActivity(), "Details stored successfully", Toast.LENGTH_SHORT).show();
+                    }
+
+                   /* FirebaseDatabase.getInstance().getReference().child("Users").push().setValue(data);
+                    Toast.makeText(getActivity(), "Details stored successfully", Toast.LENGTH_SHORT).show();*/
+
+
+
+
                     mName.setText("");
                     mMobNo.setText("");
                     mEmail.setText("");
                     mEmergNo.setText("");
                     mDesc.setText("");
                 }
+
+                if(flag)
+                {
+                    startActivity(new Intent(getActivity(),User_details_home.class));
+                }
             }
+
+
 
         });
         mCancel.setOnClickListener(new View.OnClickListener() {
