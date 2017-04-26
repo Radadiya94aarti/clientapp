@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,6 @@ import java.util.Objects;
 
 public class Fragment_Add_User extends Fragment {
 
-    int isForEdit = 0;
     EditText mName,mEmail,mMobNo,mEmergNo,mDesc;
     Button mSave,mCancel;
     User_details_info data;
@@ -35,6 +35,7 @@ public class Fragment_Add_User extends Fragment {
     String q_email;
     TextView toolbar_header;
     String sname,smobno,semail,semergno,sdesc;
+    String keyvalue;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -76,13 +77,13 @@ public class Fragment_Add_User extends Fragment {
         final Bundle os = getActivity().getIntent().getExtras();
         if(os!=null)
         {
+            keyvalue = getArguments().getString("m_key");
             q_email=getArguments().getString("m_email");
             sname = getArguments().getString("m_name");
             smobno = getArguments().getString("m_mobilenum");
             semail = getArguments().getString("m_email");
             semergno = getArguments().getString("m_emergno");
             sdesc = getArguments().getString("m_desc");
-            isForEdit = getArguments().getInt("edit");
 
             toolbar.setNavigationIcon(R.drawable.back_arrow);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -97,7 +98,6 @@ public class Fragment_Add_User extends Fragment {
             mEmail.setText(semail);
             mEmergNo.setText(semergno);
             mDesc.setText(sdesc);
-
         }
 
         mSave.setOnClickListener(new View.OnClickListener() {
@@ -110,17 +110,6 @@ public class Fragment_Add_User extends Fragment {
                 semergno = Objects.toString(mEmergNo.getText(),null);
                 sdesc = mDesc.getText().toString();
 
-
-
-
-
-
-
-                // For edit contact
-
-
-
-
                 if(sname.isEmpty() || semail.isEmpty() || sdesc.isEmpty() || smobno.isEmpty())
                 {
                     Toast.makeText(getActivity(), "please fill all the details", Toast.LENGTH_SHORT).show();
@@ -128,44 +117,49 @@ public class Fragment_Add_User extends Fragment {
 
                 else
                 {
-
                     if(os!=null)
                     {
-                        Query query=myRef.child("Users").orderByChild("emailid").equalTo(q_email);
+                       Query query=myRef.child("Users").orderByChild("key").equalTo(keyvalue);
 
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
                                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                                    User_details_info data = new User_details_info(sname,smobno,semail,semergno,sdesc);
-                                    snapshot.getRef().setValue(data);
-                                    //   snapshot.getRef().removeValue();
-                                    flag=true;
+                                    Log.d("key : ", snapshot.getKey());
+                                    Log.d("snapshot",snapshot.getValue().toString());
+
+                                    DataSnapshot ds_key = snapshot.child("key");
+                                    String keydata = (String)ds_key.getValue();
+
+                                    if(keyvalue.equals(keydata)){
+                                        User_details_info data = new User_details_info(keyvalue, sname,smobno,semail,semergno,sdesc);
+                                        snapshot.getRef().setValue(data);
+                                        flag=true;
+                                        Intent i=new Intent(getActivity(),Activity_User_show.class);
+                                        i.putExtra("key",keyvalue);
+                                        getActivity().startActivity(i);
+                                        break;
+                                    }
                                 }
-                                //Toast.makeText(getActivity(), ""+dataSnapshot.getChildren(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Details changed Successfully " , Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
 
                             }
-
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-
                             }
                         });
-
                     }
-
                     else {
-                        User_details_info data = new User_details_info(sname,smobno,semail,semergno,sdesc);
+
+                        String keydata = String.valueOf(System.currentTimeMillis());
+                        String GenerateKey=sname + keydata;
+
+                        User_details_info data = new User_details_info(GenerateKey,sname,smobno,semail,semergno,sdesc);
                         FirebaseDatabase.getInstance().getReference().child("Users").push().setValue(data);
                         Toast.makeText(getActivity(), "Details stored successfully", Toast.LENGTH_SHORT).show();
                     }
-
-                   /* FirebaseDatabase.getInstance().getReference().child("Users").push().setValue(data);
-                    Toast.makeText(getActivity(), "Details stored successfully", Toast.LENGTH_SHORT).show();*/
-
-
-
 
                     mName.setText("");
                     mMobNo.setText("");
@@ -173,25 +167,24 @@ public class Fragment_Add_User extends Fragment {
                     mEmergNo.setText("");
                     mDesc.setText("");
                 }
-
-                if(flag)
-                {
-                    startActivity(new Intent(getActivity(),User_details_home.class));
-                }
             }
-
-
-
         });
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                mName.setText("");
-                mMobNo.setText("");
-                mEmail.setText("");
-                mEmergNo.setText("");
-                mDesc.setText("");
+                if(os!=null)
+                {
+                    getActivity().finish();
+                }
+                else {
+
+                    mName.setText("");
+                    mMobNo.setText("");
+                    mEmail.setText("");
+                    mEmergNo.setText("");
+                    mDesc.setText("");
+                }
             }
         });
         return view;

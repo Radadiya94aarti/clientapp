@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FirebaseApp.initializeApp(this);
+        //
 
 
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                     return second;
 
                 case 2 :
-                    ThirdTabFragment third = new ThirdTabFragment();
+                    Company_details_page third = new Company_details_page();
                     return third;
 
                 default:

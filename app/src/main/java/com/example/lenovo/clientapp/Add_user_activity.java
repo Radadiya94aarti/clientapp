@@ -8,17 +8,18 @@ import android.support.v7.app.AppCompatActivity;
  * Created by lenovo on 14-04-2017.
  */
 
+//midiater activity to pass data
+
 public class Add_user_activity extends AppCompatActivity {
 
-    String m_name,m_mobilenum,m_email,m_emergno,m_desc;
-
-
+    String m_name,m_mobilenum,m_email,m_emergno,m_desc,m_key;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_user_activity);
 
+        m_key = getIntent().getExtras().getString("key");
         m_name = getIntent().getExtras().getString("t_name");
         m_mobilenum = getIntent().getExtras().getString("t_mobno");
         m_email = getIntent().getExtras().getString("t_email");
@@ -29,6 +30,7 @@ public class Add_user_activity extends AppCompatActivity {
         Fragment_Add_User add_user = new Fragment_Add_User();
         Bundle bundle = new Bundle();
 
+        bundle.putString("m_key", m_key);
         bundle.putString("m_name",m_name);
         bundle.putString("m_mobilenum",m_mobilenum);
         bundle.putString("m_email",m_email);
@@ -38,6 +40,6 @@ public class Add_user_activity extends AppCompatActivity {
         add_user.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,add_user).commit();
 
-
     }
+
 }

@@ -6,7 +6,7 @@ package com.example.lenovo.clientapp;
 
 public class User_details_info {
 
-
+    private String id;
     private String username;
     private String emailid;
     private String mobileno;
@@ -24,7 +24,30 @@ public class User_details_info {
 
     boolean isChecked = false;
 
-    User_details_info(String username,String mobileno,String emailid,String emergncyno,String text) {
+    public String getKey() {
+        return id;
+    }
+
+    User_details_info()
+    {
+
+    }
+
+    User_details_info(String id, String username, String mobileno, String emailid, String emergncyno, String text) {
+        this.id = id;
+        this.username = username;
+        this.mobileno = mobileno;
+        this.emailid = emailid;
+        this.emergncyno = emergncyno;
+        this.text = text;
+    }
+
+    User_details_info(String username,String mobileno){
+        this.username=username;
+        this.mobileno=mobileno;
+    }
+
+    User_details_info( String username, String mobileno, String emailid, String emergncyno, String text) {
         this.username = username;
         this.mobileno = mobileno;
         this.emailid = emailid;

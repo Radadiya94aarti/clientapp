@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 import co.lujun.androidtagview.ColorFactory;
@@ -34,17 +36,18 @@ import co.lujun.androidtagview.TagView;
 public class Send_Mess_Page extends AppCompatActivity {
 
 
-    EditText number, mess_info;
+    EditText mess_info;
     String numbers;
     TagContainerLayout mTagContainerLayout;
+    HashMap<String,User_details_info> user_list=new HashMap<String,User_details_info>();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_mess_form);
-
+        this.user_list=User_viewdetails_adapter.user_list;
         mess_info = (EditText) findViewById(R.id.textMess);
-//        number = (EditText) findViewById(R.id.phoneNumber);
         Button mSend = (Button) findViewById(R.id.send_btn);
         Button mCancel = (Button) findViewById(R.id.cancel_btn);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_send);
@@ -53,9 +56,8 @@ public class Send_Mess_Page extends AppCompatActivity {
         TextView here = (TextView) findViewById(R.id.here_text);
 
 
+        final ArrayList<String> key_list=new ArrayList<String>();
         mTagContainerLayout = (TagContainerLayout) findViewById(R.id.tagcontainerlayout);
-
-
         toolbar.setNavigationIcon(R.drawable.back_arrow);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -77,27 +79,21 @@ public class Send_Mess_Page extends AppCompatActivity {
         to.setTypeface(typeface);
         here.setTypeface(typeface);
 
-//        final ArrayList<String> abc = getIntent().getStringArrayListExtra("array_list");
-
         mTagContainerLayout.setTheme(ColorFactory.NONE);
         mTagContainerLayout.setTagBackgroundColor(Color.TRANSPARENT);
 
-        Bundle os = getIntent().getExtras();
+        final Bundle os = getIntent().getExtras();
         if(os!=null)
         {
-
             mTagContainerLayout.setEnableCross(false);
         }
         numbers = "";
-        for (Entry<String, String> entry : User_viewdetails_adapter.map.entrySet()) {
-//            numbers = entry.getValue();
 
-            mTagContainerLayout.addTag(entry.getKey());
-//            numbers = ",";
+        for(Entry entry: user_list.entrySet()){
+            User_details_info user_details_info=(User_details_info) entry.getValue();
+            key_list.add((String) entry.getKey());
+            mTagContainerLayout.addTag(user_details_info.getUsername());
         }
-
-
-
 
         mTagContainerLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
             @Override
@@ -113,14 +109,18 @@ public class Send_Mess_Page extends AppCompatActivity {
             @Override
             public void onTagCrossClick(int position) {
 
-
                 String key = mTagContainerLayout.getTagText(position);
                 if (User_viewdetails_adapter.map.containsKey(key)) {
-                    User_viewdetails_adapter.counter--;
-                    User_viewdetails_adapter.map.remove(key);
-                    Intent intent = new Intent(Send_Mess_Page.this, User_details_home.class);
-                    setResult(RESULT_OK, intent);
+
                 }
+                User_viewdetails_adapter.counter--;
+                User_viewdetails_adapter.map.remove(key);
+                User_viewdetails_adapter.user_list.remove(key_list.get(position));
+                key_list.remove(position);
+
+                Intent intent = new Intent(Send_Mess_Page.this, User_details_home.class);
+                setResult(RESULT_OK, intent);
+
                 mTagContainerLayout.removeTag(position);
 
             }
@@ -130,20 +130,16 @@ public class Send_Mess_Page extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-                for (Entry<String, String> entry : User_viewdetails_adapter.map.entrySet()) {
-                    String message = mess_info.getText().toString();
-                    String tempMobile = entry.getValue();
+                for(Entry entry: user_list.entrySet()){
+                    User_details_info user_details_info=(User_details_info) entry.getValue();
+                    String message = mess_info.getText().toString() + "\n\nFrom <Company Name>, <Address/Contact No.>";
+                    String tempMobile = user_details_info.getMobileno();
                     sendMessage(tempMobile, message);
                 }
 
-//                for (int i = 0; i < User_viewdetails_adapter.map.size(); i++)
-//                {
-//                       String message = mess_info.getText().toString();
+                mess_info.setText("");
+                finish();
 
-//                    String tempMobileNumber = User_viewdetails_adapter.map.get(i).toString();
-//                    sendMessage(tempMobileNumber, message);
-//                }
             }
         });
 
@@ -151,8 +147,13 @@ public class Send_Mess_Page extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                mess_info.setText("");
-                mTagContainerLayout.removeAllTags();
+                if (os != null) {
+                    finish();
+                }
+                else{
+                    mess_info.setText("");
+                    mTagContainerLayout.removeAllTags();
+                }
             }
         });
     }
@@ -161,8 +162,6 @@ public class Send_Mess_Page extends AppCompatActivity {
 
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
-
-//        User_viewdetails_adapter.values.clear();
 
         Intent intent = new Intent(SENT);
         PendingIntent pi = PendingIntent.getActivity(Send_Mess_Page.this, 0, intent, 0);
@@ -234,7 +233,7 @@ public class Send_Mess_Page extends AppCompatActivity {
             smsManager.sendTextMessage(phoneNo, null, sms, pi, deliveredPI);
             Toast.makeText(Send_Mess_Page.this, "SMS is Sent!",
                     Toast.LENGTH_SHORT).show();
-            mess_info.setText(" ");
+
 
         } catch (Exception e) {
             Toast.makeText(Send_Mess_Page.this,

@@ -60,23 +60,19 @@ public class Login extends AppCompatActivity {
         login = (Button)findViewById(R.id.login_button);
         login.setTypeface(typeface);
 
-
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("admin");
-
-
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                DataSnapshot ds_admin = dataSnapshot.child("username");
+                user_name = (String) ds_admin.getValue();
 
-            DataSnapshot ds_admin = dataSnapshot.child("username");
-            user_name = (String) ds_admin.getValue();
 
-            DataSnapshot ds_pwd = dataSnapshot.child("password");
-            pass_word = (String) ds_pwd.getValue();
-
+                DataSnapshot ds_pwd = dataSnapshot.child("password");
+                pass_word = (String) ds_pwd.getValue();
 
 
                 login.setOnClickListener(new View.OnClickListener() {
@@ -96,30 +92,23 @@ public class Login extends AppCompatActivity {
                             Intent intent = new Intent(Login.this,MainActivity.class);
                             startActivity(intent);
                             finish();
-//
                         }
+
                         else
                         {
                             Toast.makeText(Login.this, "Please Enter Correct Username and Password", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
             }
 
-        });
-
-
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-            }
         });
     }
 }
